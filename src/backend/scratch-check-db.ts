@@ -1,4 +1,4 @@
-import { prisma } from 'C:/work/ANTG/tech-media-aggregator/src/lib/db';
+import { prisma } from '@/lib/db';
 
 async function main() {
   const articles = await prisma.article.findMany({
