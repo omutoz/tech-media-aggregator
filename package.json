@@ -1,0 +1,44 @@
+{
+  "name": "tech-media-aggregator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "ingest": "npx tsx src/backend/cron/run.ts",
+    "radar": "npx tsx src/backend/cron/run-radar.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^2.6.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@prisma/config": "^7.8.0",
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2",
+    "next": "^16.2.6",
+    "pg": "^8.21.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/xml2js": "^0.4.14",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "prisma": "^7.8.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.22.3",
+    "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  }
+}

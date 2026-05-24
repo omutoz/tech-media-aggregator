@@ -1,0 +1,103 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Source {
+  id        String    @id @default(uuid())
+  name      String    // e.g., "ITC.ua"
+  domain    String    @unique // e.g., "itc.ua"
+  url       String    // e.g., "https://itc.ua"
+  rssUrl    String    // RSS feed endpoint URL
+  logoPath  String    // Local fallback logo asset path
+  articles  Article[]
+}
+
+model Article {
+  id                String    @id @default(uuid())
+  sourceId          String
+  source            Source    @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  
+  // Scraped metadata
+  title             String
+  url               String    @unique
+  publishDate       DateTime
+  rawContent        String    @db.Text // Full scraped text of the article
+  author            String?
+  imageUrl          String?   // Original source image URL
+  cachedImageUrl    String?   // Vercel Edge / CDN cached proxy URL
+  
+  // Deduplication relations
+  isDuplicate       Boolean   @default(false)
+  primaryArticleId  String?
+  primaryArticle    Article?  @relation("Deduplication", fields: [primaryArticleId], references: [id], onDelete: SetNull)
+  duplicates        Article[] @relation("Deduplication")
+  
+  // Vector data for duplication checks
+  titleEmbedding    String?   @db.Text // JSON representation of embedding float array [1536] (Gemini text-embedding-004)
+
+  // === AI Metadata Fields ===
+  aiSummary         String?   @db.Text // 60-90 word Ukrainian summary
+  oneSentenceDigest String?   @db.Text // "What happened and why it matters"
+  qualityScore      Float?    // 0.0 - 10.0 quality rating
+  depthScore        Int?      // 1-5 rating of technical depth
+  credibilityScore  Int?      // 1-5 rating of source credibility
+  antiClickbaitScore Int?     // 1-5 signal-to-noise rating (5 = perfect signal, 1 = total clickbait)
+  clickbaitReason   String?   @db.Text // AI explanation of clickbait element if any
+  trustLevel        Int?      // 1-5 trust scale
+  primarySourceUrl  String?   // Link to detected original source
+  englishSourceUrl  String?   // Link to original English source (if found)
+  
+  // Smart tags
+  autoTags          String?   // JSON string of tags: ["AI", "Hardware", "Software", etc.]
+  
+  // AI filtering flags
+  isPromo           Boolean   @default(false) // Promotional pseudo-news / press release rewrites
+  isCryptoSpam      Boolean   @default(false) // Crypto spam articles
+  isSeoGarbage      Boolean   @default(false) // SEO filler articles
+  isShortRewrite    Boolean   @default(false) // Short, non-original rewrites
+  isArticle         Boolean   @default(false) // Tagged as a long-form article based on keywords
+  
+  // Source chain
+  sourceChain       String?   @db.Text // JSON string representing publication timeline nodes
+  
+  // Topic association
+  topics            TrendingTopic[] @relation("TopicArticles")
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([publishDate])
+  @@index([sourceId])
+}
+
+model TrendingTopic {
+  id            String    @id @default(uuid())
+  topicName     String    @unique
+  articles      Article[] @relation("TopicArticles")
+  weeklySummary String?   @db.Text // Gemini 3.1 Pro summary of weekly developments
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model CrossLanguageRadar {
+  id                String    @id @default(uuid())
+  englishTitle      String
+  englishUrl        String    @unique
+  englishSource     String    // e.g., "TechCrunch", "The Verge"
+  translatedTitle   String
+  translatedSummary String    @db.Text
+  publishDate       DateTime
+  createdAt         DateTime  @default(now())
+}
+
+model TimeCapsule {
+  id            String    @id @default(uuid())
+  capsuleDate   DateTime  @unique // The date of the capsule (e.g. today)
+  headlinesJson String    @db.Text // JSON string representing headlines array: [{ title, sourceName }]
+  retrospective String    @db.Text // AI commentary
+  createdAt     DateTime  @default(now())
+}

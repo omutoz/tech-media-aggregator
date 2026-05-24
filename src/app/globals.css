@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+:root {
+  /* Premium Dark Theme Palette */
+  --bg-main: #06060c;
+  --bg-card: rgba(18, 18, 29, 0.7);
+  --bg-card-hover: rgba(26, 26, 42, 0.85);
+  
+  --border-glass: rgba(255, 255, 255, 0.06);
+  --border-glass-hover: rgba(147, 51, 234, 0.35); /* purple glow on hover */
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+  --accent-teal: #0d9488;
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+  --accent-amber: #f59e0b;
+
+  /* Typography */
+  --font-main: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(147, 51, 234, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
+  box-shadow: 0 12px 30px rgba(147, 51, 234, 0.1);
+}
+
+/* Trust level pill dynamic states */
+.trust-level-1 { background-color: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+.trust-level-2 { background-color: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+.trust-level-3 { background-color: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+.trust-level-4 { background-color: rgba(13, 148, 136, 0.15); color: var(--accent-teal); border: 1px solid rgba(13, 148, 136, 0.3); }
+.trust-level-5 { background-color: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+/* Clickbait gauge states */
+.clickbait-badge-low { background-color: rgba(244, 63, 94, 0.15); color: var(--accent-rose); }
+.clickbait-badge-mid { background-color: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+.clickbait-badge-high { background-color: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); }
+
+/* Source Chain Flowchart styling */
+.source-chain-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.source-chain-node {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.source-chain-node.active {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: var(--accent-purple);
+  font-weight: 600;
+}
+
+.source-chain-arrow {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+/* Micro-animations */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(168, 85, 247, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+}
+
+.glow-active {
+  animation: pulseGlow 3s infinite;
+}
+
+/* Banner placements */
+.banner-slot {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.banner-slot:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Shimmer placeholder animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
